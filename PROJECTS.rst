@@ -46,6 +46,8 @@ Full screen applications:
 - `pypager <https://github.com/prompt-toolkit/pypager>`_: A $PAGER in pure Python (like "less").
 - `kubeterminal <https://github.com/samisalkosuo/kubeterminal>`_: Kubectl helper tool.
 - `pydoro <https://github.com/JaDogg/pydoro>`_: Pomodoro timer.
+- `etm <https://github.com/dagraham/etm-dgraham>`_: Event and Task Manager.
+ 
 
 Libraries:
 
