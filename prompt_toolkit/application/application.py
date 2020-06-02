@@ -491,29 +491,31 @@ class Application(Generic[_AppResult]):
 
         def run_in_context() -> None:
             # Only draw when no sub application was started.
-            if self._is_running and not self._running_in_terminal:
-                if self.min_redraw_interval:
-                    self._last_redraw_time = time.time()
+            if not self._is_running or self._running_in_terminal:
+                return
 
-                # Render
-                self.render_counter += 1
-                self.before_render.fire()
+            if self.min_redraw_interval:
+                self._last_redraw_time = time.time()
 
-                if render_as_done:
-                    if self.erase_when_done:
-                        self.renderer.erase()
-                    else:
-                        # Draw in 'done' state and reset renderer.
-                        self.renderer.render(self, self.layout, is_done=render_as_done)
+            # Render
+            self.render_counter += 1
+            self.before_render.fire()
+
+            if render_as_done:
+                if self.erase_when_done:
+                    self.renderer.erase()
                 else:
-                    self.renderer.render(self, self.layout)
+                    # Draw in 'done' state and reset renderer.
+                    self.renderer.render(self, self.layout, is_done=render_as_done)
+            else:
+                self.renderer.render(self, self.layout)
 
-                self.layout.update_parents_relations()
+            self.layout.update_parents_relations()
 
-                # Fire render event.
-                self.after_render.fire()
+            # Fire render event.
+            self.after_render.fire()
 
-                self._update_invalidate_events()
+            self._update_invalidate_events()
 
         # NOTE: We want to make sure this Application is the active one. The
         #       invalidate function is often called from a context where this
@@ -550,8 +552,7 @@ class Application(Generic[_AppResult]):
         # (All controls are able to invalidate themselves.)
         def gather_events() -> Iterable[Event[object]]:
             for c in self.layout.find_all_controls():
-                for ev in c.get_invalidate_events():
-                    yield ev
+                yield from c.get_invalidate_events()
 
         self._invalidate_events = list(gather_events())
 
@@ -639,10 +640,10 @@ class Application(Generic[_AppResult]):
                 nonlocal flush_task
 
                 # Ignore when we aren't running anymore. This callback will
-                # removed from the loop next time. (It could be that it was
-                # still in the 'tasks' list of the loop.)
-                # Except: if we need to process incoming CPRs.
-                if not self._is_running and not self.renderer.waiting_for_cpr:
+                    # removed from the loop next time. (It could be that it was
+                    # still in the 'tasks' list of the loop.)
+                    # Except: if we need to process incoming CPRs.
+                if not (self._is_running or self.renderer.waiting_for_cpr):
                     return
 
                 # Get keys from the input object.
@@ -933,9 +934,9 @@ class Application(Generic[_AppResult]):
         Send CPR request.
         """
         # Note: only do this if the input queue is not empty, and a return
-        # value has not been set. Otherwise, we won't be able to read the
-        # response anyway.
-        if not self.key_processor.input_queue and not self.is_done:
+            # value has not been set. Otherwise, we won't be able to read the
+            # response anyway.
+        if not (self.key_processor.input_queue or self.is_done):
             self.renderer.request_absolute_cursor_position()
 
     async def run_system_command(

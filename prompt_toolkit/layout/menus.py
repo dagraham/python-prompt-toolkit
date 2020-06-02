@@ -702,14 +702,14 @@ class _SelectedCompletionMetaControl(UIControl):
         return UIContent(get_line=get_line, line_count=1 if fragments else 0)
 
     def _get_text_fragments(self) -> StyleAndTextTuples:
-        style = "class:completion-menu.multi-column-meta"
         state = get_app().current_buffer.complete_state
 
         if (
-            state
-            and state.current_completion
-            and state.current_completion.display_meta_text
-        ):
+                state
+                and state.current_completion
+                and state.current_completion.display_meta_text
+            ):
+            style = "class:completion-menu.multi-column-meta"
             return to_formatted_text(
                 cast(StyleAndTextTuples, [("", " ")])
                 + state.current_completion.display_meta

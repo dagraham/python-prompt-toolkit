@@ -94,13 +94,9 @@ def _expand_classname(classname: str) -> List[str]:
 
     E.g. 'a.b.c' becomes ['a', 'a.b', 'a.b.c']
     """
-    result = []
     parts = classname.split(".")
 
-    for i in range(1, len(parts) + 1):
-        result.append(".".join(parts[:i]).lower())
-
-    return result
+    return [".".join(parts[:i]).lower() for i in range(1, len(parts) + 1)]
 
 
 def _parse_style_str(style_str: str) -> Attrs:

@@ -48,8 +48,6 @@ def test_pathcompleter_completes_files_in_current_directory():
     test_dir = tempfile.mkdtemp()
     write_test_files(test_dir)
 
-    expected = sorted([str(i) for i in range(10)])
-
     if not test_dir.endswith(os.path.sep):
         test_dir += os.path.sep
 
@@ -61,6 +59,8 @@ def test_pathcompleter_completes_files_in_current_directory():
         event = CompleteEvent()
         completions = list(completer.get_completions(doc, event))
         result = sorted(c.text for c in completions)
+        expected = sorted([str(i) for i in range(10)])
+
         assert expected == result
 
     # cleanup

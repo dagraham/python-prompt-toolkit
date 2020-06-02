@@ -255,8 +255,7 @@ class ConsoleInputReader:
                 if k is not None:
                     yield k
         else:
-            for k2 in all_keys:
-                yield k2
+            yield from all_keys
 
     def _insert_key_data(self, key_press: KeyPress) -> KeyPress:
         """
@@ -280,21 +279,18 @@ class ConsoleInputReader:
             ir = input_records[i]
 
             # Get the right EventType from the EVENT_RECORD.
-            # (For some reason the Windows console application 'cmder'
-            # [http://gooseberrycreative.com/cmder/] can return '0' for
-            # ir.EventType. -- Just ignore that.)
+                    # (For some reason the Windows console application 'cmder'
+                    # [http://gooseberrycreative.com/cmder/] can return '0' for
+                    # ir.EventType. -- Just ignore that.)
             if ir.EventType in EventTypes:
                 ev = getattr(ir.Event, EventTypes[ir.EventType])
 
                 # Process if this is a key event. (We also have mouse, menu and
-                # focus events.)
+                            # focus events.)
                 if type(ev) == KEY_EVENT_RECORD and ev.KeyDown:
-                    for key_press in self._event_to_key_presses(ev):
-                        yield key_press
-
+                    yield from self._event_to_key_presses(ev)
                 elif type(ev) == MOUSE_EVENT_RECORD:
-                    for key_press in self._handle_mouse(ev):
-                        yield key_press
+                    yield from self._handle_mouse(ev)
 
     @staticmethod
     def _is_paste(keys) -> bool:

@@ -274,9 +274,12 @@ class Layout:
         Return `None` when nothing was found.
         """
         for w in self.walk():
-            if isinstance(w, Window) and isinstance(w.content, BufferControl):
-                if w.content.buffer.name == buffer_name:
-                    return w.content.buffer
+            if (
+                isinstance(w, Window)
+                and isinstance(w.content, BufferControl)
+                and w.content.buffer.name == buffer_name
+            ):
+                return w.content.buffer
         return None
 
     @property
@@ -342,8 +345,7 @@ class Layout:
         """
         Walk through all the layout nodes (and their children) and yield them.
         """
-        for i in walk(self.container):
-            yield i
+        yield from walk(self.container)
 
     def walk_through_modal_area(self) -> Iterable[Container]:
         """
@@ -356,8 +358,7 @@ class Layout:
         while not root.is_modal() and root in self._child_to_parent:
             root = self._child_to_parent[root]
 
-        for container in walk(root):
-            yield container
+        yield from walk(root)
 
     def update_parents_relations(self) -> None:
         """

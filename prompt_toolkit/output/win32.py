@@ -279,12 +279,12 @@ class Win32Output(Output):
         if color_depth != ColorDepth.DEPTH_1_BIT:
             # Override the last four bits: foreground color.
             if fgcolor:
-                win_attrs = win_attrs & ~0xF
+                win_attrs &= ~0xF
                 win_attrs |= self.color_lookup_table.lookup_fg_color(fgcolor)
 
             # Override the next four bits: background color.
             if bgcolor:
-                win_attrs = win_attrs & ~0xF0
+                win_attrs &= ~0xF0
                 win_attrs |= self.color_lookup_table.lookup_bg_color(bgcolor)
 
         # Reverse: swap these four bits groups.

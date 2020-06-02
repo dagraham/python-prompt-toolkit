@@ -35,11 +35,10 @@ def create_input(
             stdin = sys.stdin
 
             if always_prefer_tty:
-                for io in [sys.stdin, sys.stdout, sys.stderr]:
+                for io in [stdin, sys.stdout, sys.stderr]:
                     if io.isatty():
                         stdin = io
                         break
-
         return Vt100Input(stdin)
 
 

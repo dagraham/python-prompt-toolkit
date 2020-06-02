@@ -724,7 +724,7 @@ def load_vi_bindings() -> KeyBindingsBase:
         """
         Join lines.
         """
-        for i in range(event.arg):
+        for _ in range(event.arg):
             event.current_buffer.join_next_line()
 
     @handle("g", "J", filter=vi_navigation_mode & ~is_read_only)
@@ -732,7 +732,7 @@ def load_vi_bindings() -> KeyBindingsBase:
         """
         Join lines without space.
         """
-        for i in range(event.arg):
+        for _ in range(event.arg):
             event.current_buffer.join_next_line(separator="")
 
     @handle("J", filter=vi_selection_mode & ~is_read_only)
@@ -824,7 +824,7 @@ def load_vi_bindings() -> KeyBindingsBase:
 
     @handle("u", filter=vi_navigation_mode, save_before=(lambda e: False))
     def _undo(event: E) -> None:
-        for i in range(event.arg):
+        for _ in range(event.arg):
             event.current_buffer.undo()
 
     @handle("V", filter=vi_navigation_mode)

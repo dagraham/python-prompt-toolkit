@@ -112,11 +112,7 @@ class ANSI:
         """
         Taken a list of graphics attributes and apply changes.
         """
-        if not attrs:
-            attrs = [0]
-        else:
-            attrs = list(attrs[::-1])
-
+        attrs = [0] if not attrs else list(attrs[::-1])
         while attrs:
             attr = attrs.pop()
 
@@ -233,10 +229,10 @@ _fg_colors = {v: k for k, v in FG_ANSI_COLORS.items()}
 _bg_colors = {v: k for k, v in BG_ANSI_COLORS.items()}
 
 # Mapping of the escape codes for 256colors to their 'ffffff' value.
-_256_colors = {}
-
-for i, (r, g, b) in enumerate(_256_colors_table.colors):
-    _256_colors[i] = "#%02x%02x%02x" % (r, g, b)
+_256_colors = {
+    i: "#%02x%02x%02x" % (r, g, b)
+    for i, (r, g, b) in enumerate(_256_colors_table.colors)
+}
 
 
 def ansi_escape(text: str) -> str:

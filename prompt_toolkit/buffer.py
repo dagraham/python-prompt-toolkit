@@ -316,11 +316,7 @@ class Buffer:
         self.history.load(new_history_item)
 
     def __repr__(self) -> str:
-        if len(self.text) < 15:
-            text = self.text
-        else:
-            text = self.text[:12] + "..."
-
+        text = self.text if len(self.text) < 15 else self.text[:12] + "..."
         return "<Buffer(name=%r, text=%r) at %r>" % (self.name, text, id(self))
 
     def reset(
@@ -1297,9 +1293,9 @@ class Buffer:
 
             # Call validator.
             error = None
-            document = self.document
-
             if self.validator:
+                document = self.document
+
                 try:
                     await self.validator.validate_async(self.document)
                 except ValidationError as e:
@@ -1814,11 +1810,7 @@ class Buffer:
 
         # When the validation succeeded, accept the input.
         if valid:
-            if self.accept_handler:
-                keep_text = self.accept_handler(self)
-            else:
-                keep_text = False
-
+            keep_text = self.accept_handler(self) if self.accept_handler else False
             self.append_to_history()
 
             if not keep_text:

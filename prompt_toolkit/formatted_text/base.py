@@ -109,9 +109,7 @@ def is_formatted_text(value: object) -> bool:
         return True
     if isinstance(value, (str, list)):
         return True
-    if hasattr(value, "__pt_formatted_text__"):
-        return True
-    return False
+    return bool(hasattr(value, "__pt_formatted_text__"))
 
 
 class FormattedText(StyleAndTextTuples):

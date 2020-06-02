@@ -157,10 +157,7 @@ def _split_multiline_prompt(
     """
 
     def has_before_fragments() -> bool:
-        for fragment, char, *_ in get_prompt_text():
-            if "\n" in char:
-                return True
-        return False
+        return any("\n" in char for fragment, char, *_ in get_prompt_text())
 
     def before() -> StyleAndTextTuples:
         result: StyleAndTextTuples = []

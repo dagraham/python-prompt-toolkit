@@ -238,14 +238,8 @@ class TextArea:
         )
 
         if multiline:
-            if scrollbar:
-                right_margins = [ScrollbarMargin(display_arrows=True)]
-            else:
-                right_margins = []
-            if line_numbers:
-                left_margins = [NumberedMargin()]
-            else:
-                left_margins = []
+            right_margins = [ScrollbarMargin(display_arrows=True)] if scrollbar else []
+            left_margins = [NumberedMargin()] if line_numbers else []
         else:
             height = D.exact(1)
             left_margins = []

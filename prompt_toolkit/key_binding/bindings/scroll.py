@@ -24,8 +24,6 @@ def scroll_forward(event: E, half: bool = False) -> None:
     Scroll window down.
     """
     w = event.app.layout.current_window
-    b = event.app.current_buffer
-
     if w and w.render_info:
         info = w.render_info
         ui_content = info.ui_content
@@ -34,6 +32,8 @@ def scroll_forward(event: E, half: bool = False) -> None:
         scroll_height = info.window_height
         if half:
             scroll_height //= 2
+
+        b = event.app.current_buffer
 
         # Calculate how many lines is equivalent to that vertical space.
         y = b.document.cursor_position_row + 1
@@ -55,8 +55,6 @@ def scroll_backward(event: E, half: bool = False) -> None:
     Scroll window up.
     """
     w = event.app.layout.current_window
-    b = event.app.current_buffer
-
     if w and w.render_info:
         info = w.render_info
 
@@ -64,6 +62,8 @@ def scroll_backward(event: E, half: bool = False) -> None:
         scroll_height = info.window_height
         if half:
             scroll_height //= 2
+
+        b = event.app.current_buffer
 
         # Calculate how many lines is equivalent to that vertical space.
         y = max(0, b.document.cursor_position_row - 1)
@@ -167,9 +167,9 @@ def scroll_page_up(event: E) -> None:
     Scroll page up. (Prefer the cursor at the bottom of the page, after scrolling.)
     """
     w = event.app.layout.current_window
-    b = event.app.current_buffer
-
     if w and w.render_info:
+        b = event.app.current_buffer
+
         # Put cursor at the first visible line. (But make sure that the cursor
         # moves at least one line up.)
         line_index = max(

@@ -70,7 +70,7 @@ class _AsyncGeneratorContextManager(
             if value is None:
                 value = typ()
             # See _GeneratorContextManager.__exit__ for comments on subtleties
-            # in this implementation
+                    # in this implementation
             try:
                 await self.gen.athrow(typ, value, traceback)
                 raise RuntimeError("generator didn't stop after athrow()")
@@ -80,14 +80,16 @@ class _AsyncGeneratorContextManager(
                 if exc is value:
                     return False
                 # Avoid suppressing if a StopIteration exception
-                # was passed to throw() and later wrapped into a RuntimeError
-                # (see PEP 479 for sync generators; async generators also
-                # have this behavior). But do this only if the exception wrapped
-                # by the RuntimeError is actully Stop(Async)Iteration (see
-                # issue29692).
-                if isinstance(value, (StopIteration, StopAsyncIteration)):
-                    if exc.__cause__ is value:
-                        return False
+                            # was passed to throw() and later wrapped into a RuntimeError
+                            # (see PEP 479 for sync generators; async generators also
+                            # have this behavior). But do this only if the exception wrapped
+                            # by the RuntimeError is actully Stop(Async)Iteration (see
+                            # issue29692).
+                if (
+                    isinstance(value, (StopIteration, StopAsyncIteration))
+                    and exc.__cause__ is value
+                ):
+                    return False
                 raise
             except BaseException as exc:
                 if exc is not value:

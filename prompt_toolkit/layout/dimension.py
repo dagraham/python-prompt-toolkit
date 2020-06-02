@@ -202,9 +202,7 @@ def is_dimension(value: object) -> bool:
         return True
     if callable(value):
         return True  # Assume it's a callable that doesn't take arguments.
-    if isinstance(value, (int, Dimension)):
-        return True
-    return False
+    return isinstance(value, (int, Dimension))
 
 
 # Common alias.

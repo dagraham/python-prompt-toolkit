@@ -296,7 +296,7 @@ def uppercase_word(event: E) -> None:
     """
     buff = event.current_buffer
 
-    for i in range(event.arg):
+    for _ in range(event.arg):
         pos = buff.document.find_next_word_ending()
         words = buff.document.text_after_cursor[:pos]
         buff.insert_text(words.upper(), overwrite=True)
@@ -309,7 +309,7 @@ def downcase_word(event: E) -> None:
     """
     buff = event.current_buffer
 
-    for i in range(event.arg):  # XXX: not DRY: see meta_c and meta_u!!
+    for _ in range(event.arg):    # XXX: not DRY: see meta_c and meta_u!!
         pos = buff.document.find_next_word_ending()
         words = buff.document.text_after_cursor[:pos]
         buff.insert_text(words.lower(), overwrite=True)
@@ -322,7 +322,7 @@ def capitalize_word(event: E) -> None:
     """
     buff = event.current_buffer
 
-    for i in range(event.arg):
+    for _ in range(event.arg):
         pos = buff.document.find_next_word_ending()
         words = buff.document.text_after_cursor[:pos]
         buff.insert_text(words.title(), overwrite=True)
@@ -490,10 +490,10 @@ def yank_pop(event: E) -> None:
     """
     buff = event.current_buffer
     doc_before_paste = buff.document_before_paste
-    clipboard = event.app.clipboard
-
     if doc_before_paste is not None:
         buff.document = doc_before_paste
+        clipboard = event.app.clipboard
+
         clipboard.rotate()
         buff.paste_clipboard_data(clipboard.get_data(), paste_mode=PasteMode.EMACS)
 

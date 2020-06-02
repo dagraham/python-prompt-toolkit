@@ -346,7 +346,7 @@ class KeyBindings(KeyBindingsBase):
                     any_count = 0
 
                     for i, j in zip(b.keys, keys):
-                        if i != j and i != Keys.Any:
+                        if i not in [j, Keys.Any]:
                             match = False
                             break
 
@@ -377,11 +377,7 @@ class KeyBindings(KeyBindingsBase):
             result = []
             for b in self.bindings:
                 if len(keys) < len(b.keys):
-                    match = True
-                    for i, j in zip(b.keys, keys):
-                        if i != j and i != Keys.Any:
-                            match = False
-                            break
+                    match = not any(i != j and i != Keys.Any for i, j in zip(b.keys, keys))
                     if match:
                         result.append(b)
             return result

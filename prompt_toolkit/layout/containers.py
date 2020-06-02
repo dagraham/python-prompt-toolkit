@@ -1017,9 +1017,7 @@ class FloatContainer(Container):
         return self.key_bindings
 
     def get_children(self) -> List[Container]:
-        children = [self.content]
-        children.extend(f.content for f in self.floats)
-        return children
+        return [self.content, *(f.content for f in self.floats)]
 
 
 class Float:
@@ -1229,10 +1227,7 @@ class WindowRenderInfo:
         """
         result: Dict[int, int] = {}
         for k, v in self.visible_line_to_input_line.items():
-            if v in result:
-                result[v] = min(result[v], k)
-            else:
-                result[v] = k
+            result[v] = min(result[v], k) if v in result else k
         return result
 
     def first_visible_line(self, after_scroll_offset: bool = False) -> int:
@@ -2147,11 +2142,7 @@ class Window(Container):
         (Useful for floats and when a `char` has been given.)
         """
         char: Optional[str]
-        if callable(self.char):
-            char = self.char()
-        else:
-            char = self.char
-
+        char = self.char() if callable(self.char) else self.char
         if erase_bg or char:
             wp = write_position
             char_obj = _CHAR_CACHE[char or " ", ""]
@@ -2221,14 +2212,12 @@ class Window(Container):
         """
         Highlight cursor row/column.
         """
-        cursor_line_style = " class:cursor-line "
-        cursor_column_style = " class:cursor-column "
-
         data_buffer = new_screen.data_buffer
 
         # Highlight cursor line.
         if self.cursorline():
             row = data_buffer[cpos.y]
+            cursor_line_style = " class:cursor-line "
             for x in range(x, x + width):
                 original_char = row[x]
                 row[x] = _CHAR_CACHE[
@@ -2237,6 +2226,8 @@ class Window(Container):
 
         # Highlight cursor column.
         if self.cursorcolumn():
+            cursor_column_style = " class:cursor-column "
+
             for y2 in range(y, y + height):
                 row = data_buffer[y2]
                 original_char = row[cpos.x]
@@ -2357,9 +2348,8 @@ class Window(Container):
             used_height = 0
             prev_lineno = ui_content.cursor_position.y
 
-            for lineno in range(ui_content.cursor_position.y, -1, -1):
+            for lineno in range(prev_lineno, -1, -1):
                 used_height += get_line_height(lineno)
-
                 if used_height > height - scroll_offsets_bottom:
                     return prev_lineno
                 else:
@@ -2371,9 +2361,8 @@ class Window(Container):
             prev_lineno = ui_content.cursor_position.y
             used_height = 0
 
-            for lineno in range(ui_content.cursor_position.y - 1, -1, -1):
+            for lineno in range(prev_lineno - 1, -1, -1):
                 used_height += get_line_height(lineno)
-
                 if used_height > scroll_offsets_top:
                     return prev_lineno
                 else:

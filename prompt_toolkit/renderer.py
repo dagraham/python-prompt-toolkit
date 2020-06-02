@@ -110,7 +110,7 @@ def _output_screen_diff(
         if current_x >= width - 1:
             write("\r")
             _output_cursor_forward(new.x)
-        elif new.x < current_x or current_x >= width - 1:
+        elif new.x < current_x:
             _output_cursor_backward(current_x - new.x)
         elif new.x > current_x:
             _output_cursor_forward(new.x - current_x)

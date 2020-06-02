@@ -40,8 +40,7 @@ class GrammarCompleter(Completer):
                 self._get_completions_for_match(m, complete_event)
             )
 
-            for c in completions:
-                yield c
+            yield from completions
 
     def _get_completions_for_match(
         self, match: Match, complete_event: CompleteEvent
@@ -53,8 +52,6 @@ class GrammarCompleter(Completer):
         """
         for match_variable in match.end_nodes():
             varname = match_variable.varname
-            start = match_variable.start
-
             completer = self.completers.get(varname)
 
             if completer:
@@ -65,6 +62,8 @@ class GrammarCompleter(Completer):
 
                 # Create a document, for the completions API (text/cursor_position)
                 document = Document(unwrapped_text, len(unwrapped_text))
+
+                start = match_variable.start
 
                 # Call completer
                 for completion in completer.get_completions(document, complete_event):

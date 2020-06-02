@@ -285,8 +285,6 @@ class HighlightSelectionProcessor(Processor):
             _,
         ) = transformation_input.unpack()
 
-        selected_fragment = " class:selected "
-
         # In case of selection, highlight all matches.
         selection_at_line = document.selection_range_at_line(lineno)
 
@@ -296,6 +294,8 @@ class HighlightSelectionProcessor(Processor):
             to = source_to_display(to)
 
             fragments = explode_text_fragments(fragments)
+
+            selected_fragment = " class:selected "
 
             if from_ == 0 and to == 0 and len(fragments) == 0:
                 # When this is an empty line, insert a space in order to
@@ -484,9 +484,7 @@ class DisplayMultipleCursors(Processor):
                         style += fragment_suffix
                         fragments[column] = (style, text)
 
-            return Transformation(fragments)
-        else:
-            return Transformation(fragments)
+        return Transformation(fragments)
 
 
 class BeforeInput(Processor):
@@ -966,7 +964,7 @@ def merge_processors(processors: List[Processor]) -> Processor:
     """
     Merge multiple `Processor` objects into one.
     """
-    if len(processors) == 0:
+    if not processors:
         return DummyProcessor()
 
     if len(processors) == 1:

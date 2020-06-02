@@ -193,8 +193,7 @@ class Completer(metaclass=ABCMeta):
 
         Asynchronous generator of :class:`.Completion` objects.
         """
-        for item in self.get_completions(document, complete_event):
-            yield item
+        yield from self.get_completions(document, complete_event)
 
 
 class ThreadedCompleter(Completer):
@@ -222,10 +221,9 @@ class ThreadedCompleter(Completer):
         """
         Asynchronous generator of completions.
         """
-        async for completion in generator_to_async_generator(
-            lambda: self.completer.get_completions(document, complete_event)
-        ):
-            yield completion
+        yield from generator_to_async_generator(
+                lambda: self.completer.get_completions(document, complete_event)
+            )
 
     def __repr__(self) -> str:
         return "ThreadedCompleter(%r)" % (self.completer,)
@@ -266,10 +264,9 @@ class DynamicCompleter(Completer):
     ) -> AsyncGenerator[Completion, None]:
         completer = self.get_completer() or DummyCompleter()
 
-        async for completion in completer.get_completions_async(
-            document, complete_event
-        ):
-            yield completion
+        yield from completer.get_completions_async(
+                document, complete_event
+            )
 
     def __repr__(self) -> str:
         return "DynamicCompleter(%r -> %r)" % (self.get_completer, self.get_completer())
@@ -288,8 +285,7 @@ class _MergedCompleter(Completer):
     ) -> Iterable[Completion]:
         # Get all completions from the other completers in a blocking way.
         for completer in self.completers:
-            for c in completer.get_completions(document, complete_event):
-                yield c
+            yield from completer.get_completions(document, complete_event)
 
     async def get_completions_async(
         self, document: Document, complete_event: CompleteEvent
@@ -297,8 +293,7 @@ class _MergedCompleter(Completer):
 
         # Get all completions from the other completers in a blocking way.
         for completer in self.completers:
-            async for item in completer.get_completions_async(document, complete_event):
-                yield item
+            yield from completer.get_completions_async(document, complete_event)
 
 
 def merge_completers(completers: Sequence[Completer]) -> _MergedCompleter:

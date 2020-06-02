@@ -182,11 +182,7 @@ class _16ColorCache:
         match = _get_closest_ansi_color(r, g, b, exclude=exclude)
 
         # Turn color name into code.
-        if self.bg:
-            code = BG_ANSI_COLORS[match]
-        else:
-            code = FG_ANSI_COLORS[match]
-
+        code = BG_ANSI_COLORS[match] if self.bg else FG_ANSI_COLORS[match]
         return code, match
 
 
@@ -291,11 +287,7 @@ class _EscapeCodeCache(Dict[Attrs, str]):
         if hidden:
             parts.append("8")
 
-        if parts:
-            result = "\x1b[0;" + ";".join(parts) + "m"
-        else:
-            result = "\x1b[0m"
-
+        result = "\x1b[0;" + ";".join(parts) + "m" if parts else "\x1b[0m"
         self[attrs] = result
         return result
 
